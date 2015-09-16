@@ -23,3 +23,9 @@ OTHER_FILES += qml/harbour-kormoran.qml \
     rpm/harbour-kormoran.spec \
     rpm/harbour-kormoran.yaml \
     harbour-kormoran.desktop \
+
+# to disable building translations every time, comment out the
+# following CONFIG line
+CONFIG += sailfishapp_i18n
+
+TRANSLATIONS += translations/harbour-kormoran-de.ts
