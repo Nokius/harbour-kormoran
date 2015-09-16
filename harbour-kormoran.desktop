@@ -3,5 +3,4 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-kormoran
 Exec=sailfish-qml harbour-kormoran
-Name=harbour-kormoran
-
+Name=Kormoran
