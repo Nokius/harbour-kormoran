@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 X-Nemo-Application-Type=silica-qt5
-Icon=harbour-kormoran.png
+Icon=harbour-kormoran
 Exec=sailfish-qml harbour-kormoran
 Name=harbour-kormoran
 
