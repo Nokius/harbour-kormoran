@@ -24,7 +24,7 @@ rm -rf %{buildroot}
 # Application files
 TARGET=%{buildroot}/%{_datadir}/%{name}
 mkdir -p $TARGET
-#cp -rpv kormoran.py $TARGET/
+cp -rpv kormoran.py $TARGET/
 cp -rpv qml $TARGET/qml
 
 # Desktop Entry
