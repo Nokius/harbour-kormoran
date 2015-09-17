@@ -25,11 +25,81 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 import "pages"
+import "models"
+import "utils/SettingsDatabase.js" as SettingsDatabase
 
 ApplicationWindow
 {
-    initialPage: Component { FirstPage { } }
+    id: mainwindow
+    allowedOrientations: defaultAllowedOrientations
+
+    initialPage: Component { MainPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
+    property alias settings: settings
+
+    Settings
+    {
+        id: settings
+
+        Component.onCompleted: {
+            SettingsDatabase.load();
+            SettingsDatabase.transaction(function(tx) {
+                    var authToken = SettingsDatabase.transactionGet(tx, "authToken");
+                    settings.authToken = (authToken === false ? "" : authToken);
+
+                    var authTokenSecret = SettingsDatabase.transactionGet(tx, "authTokenSecret");
+                    settings.authTokenSecret = (authTokenSecret === false ? "" : authTokenSecret);
+                });
+        }
+    }
+
+    Rectangle {
+        id: infoBanner
+
+        width: parent.width
+        height: infoText.height + 2 * Theme.paddingMedium
+
+        color: Theme.highlightBackgroundColor
+        opacity: 0.0
+        // On top of everything
+        z: 1
+        visible: opacity > 0.0
+
+        function showText(text) {
+            infoText.text = text
+            opacity = 0.9
+            console.log("INFO: " + text)
+            closeTimer.restart()
+        }
+
+        Label {
+            id: infoText
+            anchors.top: parent.top
+            anchors.topMargin: Theme.paddingMedium
+            x: Theme.paddingMedium
+            width: parent.width - 2 * Theme.paddingMedium
+            color: Theme.highlightColor
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.Wrap
+        }
+
+        Behavior on opacity { FadeAnimation {} }
+
+        Timer {
+            id: closeTimer
+            interval: 3000
+            onTriggered: infoBanner.opacity = 0.0
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                closeTimer.stop()
+                infoBanner.opacity = 0.0
+            }
+        }
+    }
 }
 
 

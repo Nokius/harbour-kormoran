@@ -27,5 +27,57 @@ import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.4
 
 Page {
-    id: page
+    id: mainpage
+
+    SilicaListView {
+        id: timelineView
+        anchors.fill: parent
+        spacing: Theme.paddingLarge
+        opacity: busyIndicator.running ? 0.5 : 1.0
+        quickScroll: true
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+
+        ViewPlaceholder {
+            enabled: (mainwindow.settings.authToken.length === 0) && (busyIndicator.running === false)
+            text: qsTr("Start by authorizing the application to access your twitter content!")
+        }
+
+        header: PageHeader {
+            title: qsTr("Kormoran")
+        }
+
+        VerticalScrollDecorator {}
+
+        delegate: ListItem {}
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        running: false
+        size: BusyIndicatorSize.Large
+    }
+
+    Python {
+        id: python
+
+        Component.onCompleted: {
+            var pythonPath = Qt.resolvedUrl('../../').substr('file://'.length);
+            addImportPath(pythonPath);
+            
+            importModule('kormoran', function () {});
+
+        }
+
+        onError: {
+            console.log('python error: ' + traceback);
+        }
+
+        onReceived: {
+            console.log('got message from python: ' + data);
+        }
+    }
 }
