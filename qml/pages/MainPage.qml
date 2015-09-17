@@ -67,6 +67,9 @@ Page {
         Component.onCompleted: {
             var pythonPath = Qt.resolvedUrl('../../').substr('file://'.length);
             addImportPath(pythonPath);
+
+            var tweepyPath = Qt.resolvedUrl('../../third-party/tweepy').substr('file://'.length);
+            addImportPath(tweepyPath);
             
             importModule('kormoran', function () {});
 
