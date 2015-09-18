@@ -40,6 +40,13 @@ Page {
             NumberAnimation { duration: 300 }
         }
 
+         PullDownMenu {
+            MenuItem {
+                text: qsTr("Authorize")
+                onClicked: pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), { "settings": mainwindow.settings, "python": python})
+            }
+        }
+
         ViewPlaceholder {
             enabled: (mainwindow.settings.authToken.length === 0) && (busyIndicator.running === false)
             text: qsTr("Start by authorizing the application to access your twitter content!")
@@ -71,6 +78,18 @@ Page {
             var tweepyPath = Qt.resolvedUrl('../../third-party/tweepy').substr('file://'.length);
             addImportPath(tweepyPath);
             
+            var requestsPath = Qt.resolvedUrl('../../third-party/requests').substr('file://'.length);
+            addImportPath(requestsPath);
+
+            var requestsOauthlibPath = Qt.resolvedUrl('../../third-party/requests-oauthlib').substr('file://'.length);
+            addImportPath(requestsOauthlibPath);
+
+            var oauthlibPath = Qt.resolvedUrl('../../third-party/oauthlib').substr('file://'.length);
+            addImportPath(oauthlibPath);
+            
+            var sixPath = Qt.resolvedUrl('../../third-party/six').substr('file://'.length);
+            addImportPath(sixPath);
+
             importModule('kormoran', function () {});
 
         }

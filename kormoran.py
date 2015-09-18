@@ -21,3 +21,19 @@
 #  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 #  DEALINGS IN THE SOFTWARE.
 #
+
+import tweepy
+import pyotherside
+
+consumerKey = "GSNPS0n95g46qdHcWPvtcA"
+consumerSecret = "lKqZn8UK8R5e5rmcfEPxm3kn9UQ4lqGONsMilrR4oM"
+
+
+def getAuthorizationUrl():
+    auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
+    try:
+        redirect_url = auth.get_authorization_url()
+        return redirect_url
+    except tweepy.TweepError:
+        pyotherside.send("Error! Failed to get request token.")
+        return ""
