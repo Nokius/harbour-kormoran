@@ -1,3 +1,12 @@
 [submodule "third-party/tweepy"]
 	path = third-party/tweepy
 	url = https://github.com/tweepy/tweepy
+[submodule "third-party/requests"]
+	path = third-party/requests
+	url = https://github.com/kennethreitz/requests
+[submodule "third-party/requests-oauthlib"]
+	path = third-party/requests-oauthlib
+	url = https://github.com/requests/requests-oauthlib
+[submodule "third-party/oauthlib"]
+	path = third-party/oauthlib
+	url = https://github.com/idan/oauthlib
