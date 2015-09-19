@@ -27,13 +27,27 @@ import pyotherside
 
 consumerKey = "GSNPS0n95g46qdHcWPvtcA"
 consumerSecret = "lKqZn8UK8R5e5rmcfEPxm3kn9UQ4lqGONsMilrR4oM"
+auth = auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
 
 
 def getAuthorizationUrl():
-    auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
     try:
         redirect_url = auth.get_authorization_url()
         return redirect_url
     except tweepy.TweepError:
         pyotherside.send("Error! Failed to get request token.")
         return ""
+
+
+def retrieveAccessToken(verifier):
+    try:
+        auth.get_access_token(verifier)
+        return (auth.access_token, auth.access_token_secret)
+    except tweepy.TweepError:
+        pyotherside.send("Error! Failed to get access token.")
+        return ("", "")
+
+
+def testAPI():
+    api = tweepy.API(auth)
+    api.update_status('Authorization done!')

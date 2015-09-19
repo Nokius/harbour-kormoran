@@ -36,46 +36,114 @@ Dialog {
 
     allowedOrientations: defaultAllowedOrientations
     acceptDestinationAction: PageStackAction.Pop
-    //canAccept: true
+    canAccept: true
 
-    function acceptSettings() {
-        settings.authToken = ocUrlTF.text;
-        settings.authTokenSecret = ocUsernameTF.text;
+    function authorizeKormoran() {
+        busyIndicator.running = true
+        busyIndicator.visible = true
 
-        SettingsDatabase.transaction(function(tx) {
-            SettingsDatabase.transactionSet(tx, "authToken", settings.authToken);
-            SettingsDatabase.transactionSet(tx, "authTokenSecret", settings.authTokenSecret);
+        python.call('kormoran.retrieveAccessToken', [pinTF.text], function(tokenTuple) {
+            settings.authToken = tokenTuple[0];
+            settings.authTokenSecret = tokenTuple[1];
+
+            SettingsDatabase.transaction(function(tx) {
+                SettingsDatabase.transactionSet(tx, "authToken", settings.authToken);
+                SettingsDatabase.transactionSet(tx, "authTokenSecret", settings.authTokenSecret);
+            });
         });
+
+        python.call('kormoran.testAPI', [], function() {});
+
+        busyIndicator.running = false
+        busyIndicator.visible = false
     }
 
     onAccepted: {
-        acceptSettings()
+        authorizeKormoran()
     }
 
     SilicaFlickable {
+        opacity: busyIndicator.running ? 0.5 : 1.0
         anchors.fill: parent
         contentHeight: column.height + dlgheader.height
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
 
         Column
         {
             id: column
             anchors.top: parent.top
             width: parent.width
+            spacing: 5
 
             DialogHeader
             {
                 id: dlgheader
-                acceptText: qsTr("Save Settings")
+                acceptText: qsTr("Authorize")
+            }
+
+            Text {
+                anchors { 
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingMedium
+                }
+                color: Theme.primaryColor
+                wrapMode: Text.WordWrap
+                text: qsTr("Sign into your twitter account and get the authorization code for Kormoran. \
+The button below will the twitter sign in page in an external browser.")
             }
 
             Button {
-                text: qsTr("Authorize")
+                text: qsTr("Sign in")
+                anchors { 
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingMedium
+                }
                 onClicked: {
+                    infoBanner.showText(qsTr("Opening twitter login in browser"));
                     python.call('kormoran.getAuthorizationUrl', [], function(url) {
                         Qt.openUrlExternally(url);
                     });
                 }
             }
+
+            Text {
+                anchors { 
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingMedium
+                }
+                wrapMode: Text.WordWrap
+                color: Theme.primaryColor
+                text: qsTr("After signing in, a PIN code will be displayed. Enter the PIN code in the text field and click 'authotize'.")
+            }
+
+            TextField {
+                id: pinTF
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingMedium
+                }
+                inputMethodHints: Qt.ImhDigitsOnly
+                placeholderText: qsTr("Enter twitter PIN")
+                label: "twitter PIN"
+                EnterKey.enabled: text.length > 0
+                EnterKey.onClicked: authorizeKormoran()
+            }
         }
+
+        VerticalScrollDecorator {}
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        running: false
+        size: BusyIndicatorSize.Large
     }
 }
