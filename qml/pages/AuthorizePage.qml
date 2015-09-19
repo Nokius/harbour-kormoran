@@ -72,7 +72,7 @@ Dialog {
                 text: qsTr("Authorize")
                 onClicked: {
                     python.call('kormoran.getAuthorizationUrl', [], function(url) {
-                        console.log(url);
+                        Qt.openUrlExternally(url);
                     });
                 }
             }
