@@ -42,12 +42,14 @@ def getAuthorizationUrl():
 def retrieveAccessToken(verifier):
     try:
         auth.get_access_token(verifier)
-        return (auth.access_token, auth.access_token_secret)
+        r = "{\"accessToken\":\"" + auth.access_token
+        r += "\", \"accessTokenSecret\":\"" + auth.access_token_secret + "\"}"
+        return r
     except tweepy.TweepError:
         pyotherside.send("Error! Failed to get access token.")
-        return ("", "")
+        return '{"accessToken":"", "accessTokenSecret":""}'
 
 
 def testAPI():
     api = tweepy.API(auth)
-    api.update_status('Authorization done!')
+    api.update_status('Test3!')

@@ -47,7 +47,7 @@ ApplicationWindow
             SettingsDatabase.transaction(function(tx) {
                     var authToken = SettingsDatabase.transactionGet(tx, "authToken");
                     settings.authToken = (authToken === false ? "" : authToken);
-
+                    
                     var authTokenSecret = SettingsDatabase.transactionGet(tx, "authTokenSecret");
                     settings.authTokenSecret = (authTokenSecret === false ? "" : authTokenSecret);
                 });

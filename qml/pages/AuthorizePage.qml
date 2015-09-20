@@ -42,17 +42,22 @@ Dialog {
         busyIndicator.running = true
         busyIndicator.visible = true
 
-        python.call('kormoran.retrieveAccessToken', [pinTF.text], function(tokenTuple) {
-            settings.authToken = tokenTuple[0];
-            settings.authTokenSecret = tokenTuple[1];
+        if(pinTF.text.length > 0) {
+            python.call('kormoran.retrieveAccessToken', [pinTF.text], function(response) {
+                var tokenObj = JSON.parse(response)
+                settings.authToken = tokenObj.accessToken
+                settings.authTokenSecret = tokenObj.accessTokenSecret
 
-            SettingsDatabase.transaction(function(tx) {
-                SettingsDatabase.transactionSet(tx, "authToken", settings.authToken);
-                SettingsDatabase.transactionSet(tx, "authTokenSecret", settings.authTokenSecret);
+                SettingsDatabase.transaction(function(tx) {
+                    SettingsDatabase.transactionSet(tx, "authToken", settings.authToken);
+                    SettingsDatabase.transactionSet(tx, "authTokenSecret", settings.authTokenSecret);
+                });
             });
-        });
+            } else {
+                infoBanner.showText(qsTr("Please enter your twitter PIN"));
+            }
 
-        python.call('kormoran.testAPI', [], function() {});
+        //python.call('kormoran.testAPI', [], function() {});
 
         busyIndicator.running = false
         busyIndicator.visible = false
