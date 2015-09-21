@@ -26,12 +26,10 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.4
 import "../models"
-import "../utils/SettingsDatabase.js" as SettingsDatabase
 
 Dialog {
     id: authorizationPage
 
-    property Settings settings
     property Python python
 
     allowedOrientations: defaultAllowedOrientations
@@ -39,28 +37,11 @@ Dialog {
     canAccept: true
 
     function authorizeKormoran() {
-        busyIndicator.running = true
-        busyIndicator.visible = true
-
         if(pinTF.text.length > 0) {
-            python.call('kormoran.retrieveAccessToken', [pinTF.text], function(response) {
-                var tokenObj = JSON.parse(response)
-                settings.authToken = tokenObj.accessToken
-                settings.authTokenSecret = tokenObj.accessTokenSecret
-
-                SettingsDatabase.transaction(function(tx) {
-                    SettingsDatabase.transactionSet(tx, "authToken", settings.authToken);
-                    SettingsDatabase.transactionSet(tx, "authTokenSecret", settings.authTokenSecret);
-                });
-            });
-            } else {
-                infoBanner.showText(qsTr("Please enter your twitter PIN"));
-            }
-
-        //python.call('kormoran.testAPI', [], function() {});
-
-        busyIndicator.running = false
-        busyIndicator.visible = false
+            python.call('kormoran.retrieveAccessToken', [pinTF.text, StandardPaths.data], function(response) {});
+        } else {
+            infoBanner.showText(qsTr("Please enter your twitter PIN"));
+        }
     }
 
     onAccepted: {
@@ -68,13 +49,8 @@ Dialog {
     }
 
     SilicaFlickable {
-        opacity: busyIndicator.running ? 0.5 : 1.0
         anchors.fill: parent
         contentHeight: column.height + dlgheader.height
-
-        Behavior on opacity {
-            NumberAnimation { duration: 300 }
-        }
 
         Column
         {
@@ -90,10 +66,10 @@ Dialog {
             }
 
             Text {
-                anchors { 
+                anchors {
                     left: parent.left
                     right: parent.right
-                    margins: Theme.paddingMedium
+                    margins: Theme.paddingLarge
                 }
                 color: Theme.primaryColor
                 wrapMode: Text.WordWrap
@@ -103,10 +79,10 @@ The button below will the twitter sign in page in an external browser.")
 
             Button {
                 text: qsTr("Sign in")
-                anchors { 
+                anchors {
                     left: parent.left
                     right: parent.right
-                    margins: Theme.paddingMedium
+                    margins: Theme.paddingLarge
                 }
                 onClicked: {
                     infoBanner.showText(qsTr("Opening twitter login in browser"));
@@ -117,10 +93,10 @@ The button below will the twitter sign in page in an external browser.")
             }
 
             Text {
-                anchors { 
+                anchors {
                     left: parent.left
                     right: parent.right
-                    margins: Theme.paddingMedium
+                    margins: Theme.paddingLarge
                 }
                 wrapMode: Text.WordWrap
                 color: Theme.primaryColor
@@ -132,7 +108,7 @@ The button below will the twitter sign in page in an external browser.")
                 anchors {
                     left: parent.left
                     right: parent.right
-                    margins: Theme.paddingMedium
+                    margins: Theme.paddingLarge
                 }
                 inputMethodHints: Qt.ImhDigitsOnly
                 placeholderText: qsTr("Enter twitter PIN")
@@ -143,12 +119,5 @@ The button below will the twitter sign in page in an external browser.")
         }
 
         VerticalScrollDecorator {}
-    }
-
-    BusyIndicator {
-        id: busyIndicator
-        anchors.centerIn: parent
-        running: false
-        size: BusyIndicatorSize.Large
     }
 }

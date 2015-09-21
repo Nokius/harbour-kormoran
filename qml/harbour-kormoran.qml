@@ -26,14 +26,13 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 import "pages"
 import "models"
-import "utils/SettingsDatabase.js" as SettingsDatabase
 
 ApplicationWindow
 {
     id: mainwindow
     allowedOrientations: defaultAllowedOrientations
 
-    initialPage: Component { MainPage { } }
+    initialPage: Component { MainPage {} }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
     property alias settings: settings
@@ -41,17 +40,6 @@ ApplicationWindow
     Settings
     {
         id: settings
-
-        Component.onCompleted: {
-            SettingsDatabase.load();
-            SettingsDatabase.transaction(function(tx) {
-                    var authToken = SettingsDatabase.transactionGet(tx, "authToken");
-                    settings.authToken = (authToken === false ? "" : authToken);
-                    
-                    var authTokenSecret = SettingsDatabase.transactionGet(tx, "authTokenSecret");
-                    settings.authTokenSecret = (authTokenSecret === false ? "" : authTokenSecret);
-                });
-        }
     }
 
     Rectangle {

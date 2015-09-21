@@ -24,10 +24,12 @@
 
 import tweepy
 import pyotherside
+import json
+import traceback
 
 consumerKey = "GSNPS0n95g46qdHcWPvtcA"
 consumerSecret = "lKqZn8UK8R5e5rmcfEPxm3kn9UQ4lqGONsMilrR4oM"
-auth = auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
+auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
 
 
 def getAuthorizationUrl():
@@ -39,17 +41,30 @@ def getAuthorizationUrl():
         return ""
 
 
-def retrieveAccessToken(verifier):
+def retrieveAccessToken(verifier, dataPath):
     try:
         auth.get_access_token(verifier)
-        r = "{\"accessToken\":\"" + auth.access_token
-        r += "\", \"accessTokenSecret\":\"" + auth.access_token_secret + "\"}"
-        return r
+        tokData = {
+            'authToken': auth.access_token,
+            'authTokenSecret': auth.access_token_secret
+        }
+        with open(dataPath + '/tokenData.json', 'w') as f:
+            json.dump(tokData, f)
     except tweepy.TweepError:
         pyotherside.send("Error! Failed to get access token.")
-        return '{"accessToken":"", "accessTokenSecret":""}'
+
+
+def initializeAPI(dataPath):
+    try:
+        with open(dataPath + '/tokenData.json', 'r') as f:
+            tokData = json.load(f)
+        auth.set_access_token(tokData['authToken'], tokData['authTokenSecret'])
+        return 1
+    except:
+        pyotherside.send(traceback.print_exc())
+        return 0
 
 
 def testAPI():
     api = tweepy.API(auth)
-    api.update_status('Test3!')
+    api.update_status('Test4!')

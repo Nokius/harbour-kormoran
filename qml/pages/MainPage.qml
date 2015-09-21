@@ -29,6 +29,8 @@ import io.thp.pyotherside 1.4
 Page {
     id: mainpage
 
+    property bool isAuthorized: false
+
     SilicaListView {
         id: timelineView
         anchors.fill: parent
@@ -43,12 +45,12 @@ Page {
          PullDownMenu {
             MenuItem {
                 text: qsTr("Authorize")
-                onClicked: pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), { "settings": mainwindow.settings, "python": python})
+                onClicked: pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), {"python": python})
             }
         }
 
         ViewPlaceholder {
-            enabled: (mainwindow.settings.authToken.length === 0) && (busyIndicator.running === false)
+            enabled: (isAuthorized) && (busyIndicator.running === false)
             text: qsTr("Start by authorizing the application to access your twitter content!")
         }
 
@@ -77,7 +79,7 @@ Page {
 
             var tweepyPath = Qt.resolvedUrl('../../third-party/tweepy').substr('file://'.length);
             addImportPath(tweepyPath);
-            
+
             var requestsPath = Qt.resolvedUrl('../../third-party/requests').substr('file://'.length);
             addImportPath(requestsPath);
 
@@ -86,12 +88,17 @@ Page {
 
             var oauthlibPath = Qt.resolvedUrl('../../third-party/oauthlib').substr('file://'.length);
             addImportPath(oauthlibPath);
-            
+
             var sixPath = Qt.resolvedUrl('../../third-party/six').substr('file://'.length);
             addImportPath(sixPath);
 
             importModule('kormoran', function () {});
 
+            call('kormoran.initializeAPI', [StandardPaths.data], function(response) {
+                if(response === 0) {
+                    isAuthorized = false
+                }
+            });
         }
 
         onError: {
