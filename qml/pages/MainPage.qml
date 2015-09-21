@@ -29,8 +29,6 @@ import io.thp.pyotherside 1.4
 Page {
     id: mainpage
 
-    property bool isAuthorized: false
-
     SilicaListView {
         id: timelineView
         anchors.fill: parent
@@ -42,16 +40,23 @@ Page {
             NumberAnimation { duration: 300 }
         }
 
-         PullDownMenu {
+        PullDownMenu {
             MenuItem {
                 text: qsTr("Authorize")
                 onClicked: pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), {"python": python})
             }
-        }
-
-        ViewPlaceholder {
-            enabled: (isAuthorized) && (busyIndicator.running === false)
-            text: qsTr("Start by authorizing the application to access your twitter content!")
+            MenuItem {
+                text: qsTr("Refresh")
+                onClicked: {
+                    busyIndicator.running = true
+                    busyIndicator.visible = true
+                    python.call('kormoran.loadTimeline', [], function(response){
+                        console.log(response)
+                        busyIndicator.running = false
+                    busyIndicator.visible = false
+                    });
+                }
+            }
         }
 
         header: PageHeader {
@@ -94,11 +99,7 @@ Page {
 
             importModule('kormoran', function () {});
 
-            call('kormoran.initializeAPI', [StandardPaths.data], function(response) {
-                if(response === 0) {
-                    isAuthorized = false
-                }
-            });
+            call('kormoran.initializeAPI', [StandardPaths.data], function(response) {});
         }
 
         onError: {

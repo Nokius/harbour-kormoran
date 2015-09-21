@@ -65,6 +65,12 @@ def initializeAPI(dataPath):
         return 0
 
 
+def loadTimeline():
+    api = tweepy.API(auth)
+    status = api.home_timeline()
+    return "retrun json objects with data to display here"
+
+
 def testAPI():
     api = tweepy.API(auth)
     api.update_status('Test4!')
