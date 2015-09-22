@@ -32,8 +32,7 @@ ListModel
         tweetListModel.clear();
         for(var li = 0; li < rows.length; li++)
         {
-            var currentRow = rows[li];
-            tweetListModel.append({"screen_name": currentRow.screen_name, "username": currentRow.username, "content": currentRow.content, "source": currentRow.source, "profile_image_url": currentRow.profile_image_url})
+            tweetListModel.append(rows[li])
         }
     }
 }
