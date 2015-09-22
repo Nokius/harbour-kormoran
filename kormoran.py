@@ -73,7 +73,9 @@ def loadTimeline():
         tweet = {
             "username": st.user.name,
             "screen_name": st.user.screen_name,
-            "content": st.text
+            "content": st.text,
+            "source": st.source,
+            "profile_image_url": st.user.profile_image_url
         }
         tweetList.append(tweet)
     return json.dumps(tweetList)

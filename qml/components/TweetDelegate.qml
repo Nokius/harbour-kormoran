@@ -73,5 +73,17 @@ ListItem {
                 margins: Theme.paddingLarge
             }
         }
+
+        Label {
+            id: itemSource
+            text: source
+            font.pixelSize: Theme.fontSizeTiny
+            truncationMode: TruncationMode.Fade
+            anchors {
+                left: parent.left
+                right: parent.right
+                margins: Theme.paddingLarge
+            }
+        }
     }
 }
