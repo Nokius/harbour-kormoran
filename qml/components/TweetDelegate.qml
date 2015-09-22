@@ -33,39 +33,57 @@ ListItem {
     {
         id: delegateColumn
         width: parent.width
-        spacing: 5
+        spacing: 10
 
-        Label {
-            id: itemScreenName
-            text: '@' + screen_name
-            font.pixelSize: Theme.fontSizeSmall
-            truncationMode: TruncationMode.Fade
+        Row
+        {
             anchors {
                 left: parent.left
                 right: parent.right
                 margins: Theme.paddingLarge
             }
-        }
+            spacing: 15
 
-        Label {
-            id: itemUserName
-            text: username
-            font.pixelSize: Theme.fontSizeTiny
-            font.italic: true
-            truncationMode: TruncationMode.Fade
-            anchors {
-                left: parent.left
-                right: parent.right
-                 margins: Theme.paddingLarge
+            Image {
+                id: profileImage
+                sourceSize { width: parent.width; height: parent.height }
+                width: 80
+                height: 80
+                asynchronous: true
+            }
+
+            Binding {
+                id: imageSourceBinding
+                target: profileImage
+                property: "source"
+                value: profile_image_url
+            }
+            Column
+            {
+                Label {
+                    id: itemUserName
+                    text: username
+                    font.pixelSize: Theme.fontSizeSmall
+                    font.bold: true
+                    truncationMode: TruncationMode.Fade
+                }
+
+                Label {
+                    id: itemScreenName
+                    text: '@' + screen_name
+                    font.pixelSize: Theme.fontSizeTiny
+                    font.italic: true
+                    truncationMode: TruncationMode.Fade
+                }
             }
         }
 
         Label {
             id: itemContent
             text: content
-            font.pixelSize: Theme.fontSizeMedium
+            font.pixelSize: Theme.fontSizeSmall
             wrapMode: Text.WordWrap
-            maximumLineCount: 3
+            maximumLineCount: 8
             truncationMode: TruncationMode.Fade
             anchors {
                 left: parent.left

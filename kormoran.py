@@ -70,12 +70,21 @@ def loadTimeline():
     tweetList = []
     status = api.home_timeline(count=200)
     for st in status:
+        if hasattr(st, 'retweeted_status'):
+            username = st.retweeted_status.user.name
+            screen_name = st.retweeted_status.user.screen_name
+            profile_image_url = st.retweeted_status.user.profile_image_url
+        else:
+            username = st.user.name
+            screen_name = st.user.screen_name
+            profile_image_url = st.user.profile_image_url
+
         tweet = {
-            "username": st.user.name,
-            "screen_name": st.user.screen_name,
+            "username": username,
+            "screen_name": screen_name,
             "content": st.text,
             "source": st.source,
-            "profile_image_url": st.user.profile_image_url
+            "profile_image_url": profile_image_url
         }
         tweetList.append(tweet)
     return json.dumps(tweetList)
