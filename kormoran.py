@@ -68,12 +68,12 @@ def initializeAPI(dataPath):
 def loadTimeline():
     api = tweepy.API(auth)
     tweetList = []
-    status = api.home_timeline()
+    status = api.home_timeline(count=200)
     for st in status:
         tweet = {
             "username": st.user.name,
             "screen_name": st.user.screen_name,
-            "text": st.text
+            "content": st.text
         }
         tweetList.append(tweet)
     return json.dumps(tweetList)

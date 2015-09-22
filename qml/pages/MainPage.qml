@@ -25,9 +25,13 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.4
+import "../components"
+import "../models"
 
 Page {
     id: mainpage
+
+    property TweetListModel tweetListModel: TweetListModel {}
 
     SilicaListView {
         id: timelineView
@@ -51,7 +55,8 @@ Page {
                     busyIndicator.running = true
                     busyIndicator.visible = true
                     python.call('kormoran.loadTimeline', [], function(response){
-                        console.log(response)
+                        var resp = JSON.parse(response)
+                        tweetListModel.populate(resp)
                         busyIndicator.running = false
                     busyIndicator.visible = false
                     });
@@ -63,9 +68,11 @@ Page {
             title: qsTr("Kormoran")
         }
 
+        model: tweetListModel
+
         VerticalScrollDecorator {}
 
-        delegate: ListItem {}
+        delegate: TweetDelegate {}
     }
 
     BusyIndicator {
