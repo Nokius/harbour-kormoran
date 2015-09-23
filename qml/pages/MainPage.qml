@@ -47,20 +47,16 @@ Page {
         PullDownMenu {
             MenuItem {
                 text: qsTr("Authorize")
-                onClicked: pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), {"python": python})
+                onClicked: {
+                    var dialogResult = pageStack.push(Qt.resolvedUrl("AuthorizePage.qml"), {"python": python});
+                    if (dialogResult.done === DialogResult.Accepted) {
+                        refreshList();
+                    }
+                }
             }
             MenuItem {
                 text: qsTr("Refresh")
-                onClicked: {
-                    busyIndicator.running = true
-                    busyIndicator.visible = true
-                    python.call('kormoran.loadTimeline', [], function(response){
-                        var resp = JSON.parse(response)
-                        tweetListModel.populate(resp)
-                        busyIndicator.running = false
-                    busyIndicator.visible = false
-                    });
-                }
+                onClicked: refreshList();
             }
         }
 
@@ -116,5 +112,16 @@ Page {
         onReceived: {
             console.log('got message from python: ' + data);
         }
+    }
+
+    function refreshList() {
+        busyIndicator.running = true
+        busyIndicator.visible = true
+        python.call('kormoran.loadTimeline', [], function(response){
+            var resp = JSON.parse(response)
+            tweetListModel.populate(resp)
+            busyIndicator.running = false
+            busyIndicator.visible = false
+            });
     }
 }
