@@ -97,6 +97,6 @@ def loadTimeline():
     return json.dumps(tweetList)
 
 
-def testAPI():
+def send_new_tweet(content):
     api = tweepy.API(auth)
-    api.update_status('Test4!')
+    api.update_status(content)
