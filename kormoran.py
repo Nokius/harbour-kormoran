@@ -74,17 +74,24 @@ def loadTimeline():
             username = st.retweeted_status.user.name
             screen_name = st.retweeted_status.user.screen_name
             profile_image_url = st.retweeted_status.user.profile_image_url
+            retweeter_screen_name = st.user.screen_name
+            created_at = st.retweeted_status.created_at
         else:
             username = st.user.name
             screen_name = st.user.screen_name
             profile_image_url = st.user.profile_image_url
+            retweeter_screen_name = ""
+            created_at = st.created_at
 
         tweet = {
             "username": username,
             "screen_name": screen_name,
             "content": st.text,
             "source": st.source,
-            "profile_image_url": profile_image_url
+            "profile_image_url": profile_image_url,
+            "retweeter_screen_name": retweeter_screen_name,
+            "created_at": str(created_at),
+            "favorited": st.favorited
         }
         tweetList.append(tweet)
     return json.dumps(tweetList)

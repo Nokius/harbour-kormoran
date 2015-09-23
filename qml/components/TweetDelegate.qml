@@ -27,81 +27,111 @@ import Sailfish.Silica 1.0
 
 ListItem {
     id: tweetDelegate
-    contentHeight: delegateColumn.height
+    height: itemContent.height + profileImage.height + itemTimeAndSource.height + Theme.paddingSmall
 
-    Column
-    {
-        id: delegateColumn
+    Image {
+        id: profileImage
+        sourceSize { width: parent.width; height: parent.height }
+        width: 75
+        height: 75
+        asynchronous: true
+        anchors {
+            top: parent.top
+            left: parent.left
+        }
+    }
+
+    Binding {
+        id: imageSourceBinding
+        target: profileImage
+        property: "source"
+        value: profile_image_url
+    }
+
+    Label {
+        id: itemUserName
+        text: username
+        font.pixelSize: Theme.fontSizeSmall
+        font.bold: true
+        truncationMode: TruncationMode.Fade
+        anchors {
+            top: parent.top
+            left: profileImage.right
+            leftMargin: Theme.paddingMedium
+        }
+    }
+
+    Label {
+        id: itemCreatedAt
+        text: created_at
+        font.pixelSize: Theme.fontSizeTiny
+        truncationMode: TruncationMode.Fade
+        horizontalAlignment: Text.AlignRight
+        anchors {
+            top: parent.top
+            left: itemUserName.right
+            right: parent.right
+            leftMargin: Theme.paddingTiny
+            rightMargin: Theme.paddingSmall
+        }
+    }
+
+    Label {
+        id: itemScreenName
+        text: '@' + screen_name
+        font.pixelSize: Theme.fontSizeTiny
+        font.italic: true
+        truncationMode: TruncationMode.Fade
+        anchors {
+            top: itemUserName.bottom
+            left: profileImage.right
+            right: parent.right
+            leftMargin: Theme.paddingMedium
+        }
+    }
+
+    Text {
+        id: itemContent
+        text: content
+        textFormat: Text.StyledText
         width: parent.width
-        spacing: 10
-
-        Row
-        {
-            anchors {
-                left: parent.left
-                right: parent.right
-                margins: Theme.paddingLarge
-            }
-            spacing: 15
-
-            Image {
-                id: profileImage
-                sourceSize { width: parent.width; height: parent.height }
-                width: 80
-                height: 80
-                asynchronous: true
-            }
-
-            Binding {
-                id: imageSourceBinding
-                target: profileImage
-                property: "source"
-                value: profile_image_url
-            }
-            Column
-            {
-                Label {
-                    id: itemUserName
-                    text: username
-                    font.pixelSize: Theme.fontSizeSmall
-                    font.bold: true
-                    truncationMode: TruncationMode.Fade
-                }
-
-                Label {
-                    id: itemScreenName
-                    text: '@' + screen_name
-                    font.pixelSize: Theme.fontSizeTiny
-                    font.italic: true
-                    truncationMode: TruncationMode.Fade
-                }
-            }
+        height: this.contentHeight + 20
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.primaryColor
+        wrapMode: Text.WordWrap
+        maximumLineCount: 20
+        anchors {
+            top: profileImage.bottom
+            left: parent.left
+            right: parent.right
+            margins: Theme.paddingSmall
         }
+    }
 
-        Label {
-            id: itemContent
-            text: content
-            font.pixelSize: Theme.fontSizeSmall
-            wrapMode: Text.WordWrap
-            maximumLineCount: 8
-            truncationMode: TruncationMode.Fade
-            anchors {
-                left: parent.left
-                right: parent.right
-                margins: Theme.paddingLarge
-            }
+    Label {
+        id: itemTimeAndSource
+        text: source
+        font.pixelSize: Theme.fontSizeTiny
+        anchors {
+            top: itemContent.bottom
+            left: parent.left
+            topMargin: Theme.paddingTiny
+            bottomMargin: Theme.paddingMedium
+            leftMargin: Theme.paddingSmall
         }
+    }
 
-        Label {
-            id: itemSource
-            text: source
-            font.pixelSize: Theme.fontSizeTiny
-            truncationMode: TruncationMode.Fade
-            anchors {
-                left: parent.left
-                right: parent.right
-                margins: Theme.paddingLarge
-            }
+    Label {
+        id: itemRetweeter
+        text: {
+            retweeter_screen_name.length > 0 ? ' | RT by @' + retweeter_screen_name : "";
+        }
+        font.pixelSize: Theme.fontSizeTiny
+        anchors {
+            top: itemContent.bottom
+            left: itemTimeAndSource.right
+            topMargin: Theme.paddingTiny
+            rightMargin: Theme.paddingSmall
         }
     }
 }
