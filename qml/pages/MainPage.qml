@@ -131,9 +131,6 @@ Page {
 
     function newTweet() {
         var dialogResult = pageStack.push(Qt.resolvedUrl("NewTweetPage.qml"), {"python": python});
-        if (dialogResult.done === DialogResult.Accepted) {
-            refreshList();
-            infoBanner.showText(qsTr("Successfully posted new tweet!"));
-        }
+        refreshList();
     }
 }

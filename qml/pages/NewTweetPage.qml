@@ -37,6 +37,7 @@ Dialog {
     function sendNewTweet() {
         if(tweetTF.text.length > 0 && tweetTF.text.length < 141) {
             python.call('kormoran.send_new_tweet', [tweetTF.text], function(response) {});
+            infoBanner.showText(qsTr("Successfully posted new tweet!"));
         } else {
             infoBanner.showText(qsTr("Could not post tweet, too long or empty"));
         }
@@ -71,6 +72,14 @@ Dialog {
                     right: parent.right
                     margins: Theme.paddingLarge
                 }
+                onTextChanged: {
+                    charactersTF.text = 140 - tweetTF.text.length
+                }
+            }
+
+            Label {
+                id: charactersTF
+                text: '140'
             }
         }
     }
