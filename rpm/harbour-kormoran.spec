@@ -5,7 +5,7 @@ Summary: A simple and straightforward Twitter client for SailfishOS
 Group: Network
 URL: https://github.com/hwesselmann/harbour-kormoran
 License: MIT
-Source0: harbour-kormoran.tar.xz
+Source0: harbour-kormoran-%{version}.tar.xz
 BuildArch: noarch
 Requires: libsailfishapp-launcher
 Requires: python3-base
